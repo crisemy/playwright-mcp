@@ -34,6 +34,70 @@ Identify and verify:
 
 ## Exploration Method
 
+## Browser Interaction Policy
+
+Functional exploration MUST be performed through Playwright MCP browser interaction whenever an equivalent Playwright MCP tool is available.
+
+The agent MUST prefer real user-facing browser interactions over direct DOM manipulation.
+
+Preferred Playwright MCP interaction tools include:
+
+- browser_click
+- browser_type
+- browser_fill
+- browser_select_option
+- browser_check
+- browser_uncheck
+- browser_press_key
+- browser_navigate
+
+### browser_evaluate
+
+`browser_evaluate` MAY be used for inspection and diagnostic purposes, including:
+
+- inspecting DOM properties
+- reading element attributes
+- inspecting cookies
+- inspecting localStorage
+- inspecting sessionStorage
+- inspecting browser state
+- inspecting application state when it cannot be established through normal UI observation
+- collecting diagnostic evidence
+
+`browser_evaluate` MUST NOT be used to simulate user interactions when an equivalent Playwright MCP interaction tool is available.
+
+Examples of prohibited use:
+
+- setting input values directly
+- clicking elements programmatically
+- submitting forms programmatically
+- dispatching synthetic user events
+- modifying DOM state to produce an application outcome
+- bypassing UI validation or application behavior
+
+For example, do NOT use browser_evaluate to set an input value or click a button when the corresponding Playwright MCP interaction tool is available.
+
+Instead, use the appropriate Playwright MCP interaction tool.
+
+### Interaction Fidelity
+
+The purpose of this skill is to characterize application behavior through realistic browser interaction.
+
+Prefer:
+
+User action → Playwright MCP → Application → Observable behavior
+
+over:
+
+Agent code → DOM manipulation → Application state
+
+Direct DOM manipulation is permitted only when:
+
+1. the required information cannot be obtained through normal Playwright MCP interaction, or
+2. it is explicitly required for diagnostic investigation.
+
+When browser_evaluate is used for diagnostic purposes, it MUST NOT replace a normal user interaction that could have been performed through Playwright MCP.
+
 ### 1. Establish the initial state
 
 Navigate to the application.
