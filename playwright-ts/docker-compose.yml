@@ -1,0 +1,9 @@
+services:
+  playwright-tests:
+    image: mcr.microsoft.com/playwright:v1.59.1-jammy
+    init: true
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: /bin/bash -lc "npm ci && npm test"
