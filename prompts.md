@@ -1,5 +1,17 @@
 
-# LLM Prompts — Playwright MCP
+# Playwright MCP — LLM Prompts
+
+This document contains the prompts used to orchestrate the LLM-driven Playwright MCP workflow.
+
+The prompts are intentionally kept separate from the Skills.
+Skills define reusable agent behavior and constraints, while this document records the concrete instructions used to invoke each workflow stage.
+
+## Workflow
+
+1. Application Exploration
+2. Authentication Exploration
+3. Test Design
+4. Test Generation
 
 ## 1. Explore the UI Testing Lab
 
