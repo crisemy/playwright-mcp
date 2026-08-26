@@ -19,6 +19,33 @@ The objective is not only to produce tests that execute successfully, but to pro
 
 ---
 
+## Mandatory Session Start
+
+At the START of every new session, and before performing any work, the agent
+MUST read the project context file:
+
+```text
+CONTEXT.md
+```
+
+`CONTEXT.md` is the single source of persistent project context. It documents
+the repository layout, the System Under Test (SUT), how to run the SUT and
+Playwright MCP, the Playwright + TypeScript framework, mandatory Skills, and
+the evidence/traceability rules.
+
+The agent MUST:
+
+- read `CONTEXT.md` in full at the beginning of each session,
+- treat its contents as authoritative project context,
+- follow the commands, paths, credentials, and conventions it records,
+- not rely solely on `CONTEXT.md` when a task requires current application
+  inspection — verify observable behavior through Playwright MCP.
+
+If `CONTEXT.md` cannot be found or read, stop and report the problem instead of
+proceeding without it.
+
+---
+
 ## Core Principles
 
 1. Explore before implementing.

@@ -18,6 +18,59 @@ The repository contains three main components:
 - Test design
 - Playwright test generation
 
+### Running Playwright MCP
+
+Playwright MCP is the browser automation server the agent uses to explore the
+SUT through `@playwright/mcp`.
+
+#### As an opencode MCP server (recommended)
+
+The server is declared in `opencode.json` under `mcp.playwright` and is launched
+automatically by opencode whenever a session starts. No manual step is required:
+
+```json
+{
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "enabled": true
+    }
+  }
+}
+```
+
+Because the command omits `--port`, the server uses the stdio transport, which
+is what MCP clients (opencode) speak by default.
+
+#### Standalone
+
+You can also run it directly from a terminal. A plain invocation starts a stdio
+server that other MCP clients can connect to:
+
+```powershell
+npx -y @playwright/mcp@latest
+```
+
+For a network (SSE/HTTP) server that you can talk to over HTTP, pass `--port`:
+
+```powershell
+npx -y @playwright/mcp@latest --port 8931
+```
+
+Common options:
+
+- `--browser <chrome|firefox|webkit|msedge>` — pick the browser (default: Chrome).
+- `--headless` — run the browser headless (it is headed by default).
+- `--isolated` — keep the profile in memory instead of saving it to disk.
+- `--output-dir <path>` — directory for saved screenshots, traces, and downloads.
+- `--console-level <error|warning|info|debug>` — level of console messages returned.
+- `--viewport-size <width>x<height>` — browser viewport, e.g. `1280x720`.
+
+Run `npx -y @playwright/mcp@latest --help` for the full list of options.
+Requires Playwright browsers to be installed; install them with
+`npx playwright install`.
+
 ### 2. UI Testing Lab
 
 `ui-testing-lab/` is the System Under Test (SUT).
