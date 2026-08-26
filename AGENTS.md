@@ -35,11 +35,11 @@ the evidence/traceability rules.
 
 The agent MUST:
 
-- read `CONTEXT.md` in full at the beginning of each session,
-- treat its contents as authoritative project context,
-- follow the commands, paths, credentials, and conventions it records,
-- not rely solely on `CONTEXT.md` when a task requires current application
-  inspection — verify observable behavior through Playwright MCP.
+* read `CONTEXT.md` in full at the beginning of each session,
+* treat its contents as authoritative project context,
+* follow the commands, paths, credentials, and conventions it records,
+* not rely solely on `CONTEXT.md` when a task requires current application
+* inspection — verify observable behavior through Playwright MCP.
 
 If `CONTEXT.md` cannot be found or read, stop and report the problem instead of
 proceeding without it.
