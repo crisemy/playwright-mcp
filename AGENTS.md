@@ -49,47 +49,26 @@ proceeding without it.
 ## Core Principles
 
 1. Explore before implementing.
-
 2. Prefer observable application behavior over assumptions.
-
 3. Use Playwright MCP for browser interaction and application discovery.
-
 4. Do not rely on prior knowledge of the application when the behavior can be verified through the browser.
-
 5. Do not invent locators, application behavior, expected results, credentials, or authentication mechanisms.
-
 6. When evidence is available from the application, prefer that evidence over assumptions.
-
 7. Preserve the existing framework architecture.
-
 8. Do not create a new automation framework when an existing framework is available.
-
 9. Do not modify framework infrastructure unless there is a clear technical reason.
-
 10. Keep generated tests deterministic and maintainable.
-
 11. Distinguish clearly between observed behavior, inference, and unknown behavior.
-
 12. Never claim that an action was performed or verified unless it was actually performed or verified.
-
 13. Test execution success does not establish test correctness.
-
 14. A passing Playwright test may still be non-compliant with its intended requirements.
-
 15. Generated tests must be evaluated against the requirements and testing intent established by the preceding QA phases.
-
 16. Test implementations must be traceable to approved test scenarios and the evidence supporting those scenarios.
-
 17. Assertions must verify the intended behavior, not merely produce a passing test.
-
 18. Compliance evaluation is an independent verification activity and must not silently modify the implementation being evaluated.
-
 19. Unknown or inferred behavior must never be presented as verified behavior.
-
 20. When evaluating AI-generated test implementations, distinguish clearly between execution status and compliance status.
-
 21. When multiple AI models are used for the same QA task, each model must be evaluated against the same requirements, evidence, framework constraints, and task instructions.
-
 22. Model comparison must be based on evidence and evaluation criteria rather than subjective preference for a particular model.
 
 ---
