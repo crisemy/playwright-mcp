@@ -1,17 +1,24 @@
 # AI QA Multi-Model Evaluation Workflow
 
-- Prepare the baseline repository and verify that the Playwright + TypeScript framework is clean.
-- Create a baseline commit of the framework.
-- Create an isolated environment for Model A.
-- Create an isolated environment for Model B.
-- Create an isolated environment for Model C.
-- Verify that all three models start from the exact same baseline.
-- Verify that AGENTS.md is present in all three environments.
-- Verify that all four Skills are present in all three environments.
-- Verify that skill-compliance-evaluation is available.
+- Prepare the baseline repository and verify that the Playwright + TypeScript framework is clean. -> Done!
+- Create a baseline commit of the framework. -> Done!
+
+-- Use the worktree capability from Github:
+
+- Create an isolated environment for Model A. -> Done!
+- Create an isolated environment for Model B. -> Done!
+- Create an isolated environment for Model C. -> Done!
+- Verify that all three models start from the exact same baseline. -> Done!
+- Verify that AGENTS.md is present in all three environments. -> Done!
+- Verify that all four Skills are present in all three environments. -> Done!
+- Verify that skill-compliance-evaluation is available. -> Done!
+
+-- Environments Configuration
+
 - Configure Model A.
 - Configure Model B.
 - Configure Model C.
+
 - Run authentication-exploration with Model A.
 - Run authentication-exploration with Model B.
 - Run authentication-exploration with Model C.
