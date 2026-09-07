@@ -18,3 +18,6 @@ playwright/.cache/
 
 # Opencode configuration files
 opencode.json
+
+# LinkedIn posts
+linkedin-post.md
