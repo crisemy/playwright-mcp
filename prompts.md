@@ -18,6 +18,8 @@ Skills define reusable agent behavior and constraints, while this document recor
 Explore the authentication functionality of the local
 ui-test-lab/ui-testing-lab/playwright-ui-testing-lab.html application.
 
+Copy your output in a new file called exploration.md in the /evaluation folder.
+
 ---
 
 ## 2. Use the authentication-exploration Skill
@@ -26,6 +28,8 @@ Use the Skill `authentication-exploration` to explore the authentication functio
 ui-test-lab/ui-testing-lab/playwright-ui-testing-lab.html application.
 
 Do not generate test code.
+
+Copy your output in a new file called authentication-exploration.md in the /evaluation folder.
 
 ---
 
@@ -66,6 +70,8 @@ At the end, provide:
 4. A recommended authentication test suite ordered by priority.
 
 Do not modify files.
+
+Copy your output in a new file called test-design.md in the /evaluation folder.
 
 ## 4. Use the playwright-test-generation Skill
 
