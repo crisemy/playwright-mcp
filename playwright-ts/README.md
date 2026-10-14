@@ -74,7 +74,7 @@ The single owner of local environment-file loading. Values already present in yo
 - `testDir: ./tests`, fully parallel, retries on CI, HTML reporter.
 - `use.baseURL` is set from `ENV.BASE_URL`.
 - Diagnostics retained on failure: trace, screenshot, video.
-- Projects: Chromium, Firefox, WebKit (mobile/branded projects commented out for easy enabling).
+- Projects: Chromium, Firefox, WebKit (mobile/branded projects commented out for easy enabling), plus `chromium-webmcp` for the WebMCP POC (flagged local Chrome, see below).
 
 ### Page Object Model (`pages/base.page.ts`)
 
@@ -137,6 +137,53 @@ npm run test:report      # open the HTML report
 ```
 
 On failure, Playwright retains a trace, screenshot, and video under `test-results/`; inspect with the HTML report or `npx playwright show-trace <trace.zip>`.
+
+---
+
+## WebMCP POC (Sortable Data Tables)
+
+Two ways to run it: the automated specs (A) and the manual browser tour (B). Both target the UI Testing Lab's Sortable Data Tables section via page-registered tools (`tables_sort`, `tables_read_state`). **No login and no `.env` secrets are needed** — only `BASE_URL=http://localhost:8123`.
+
+Serve the SUT first (exactly one server on port 8123), from the repo root:
+
+```powershell
+cd ui-test-lab/ui-testing-lab
+python -m http.server 8123
+```
+
+### A. Automated specs
+
+Requires Google Chrome installed locally: the `chromium-webmcp` project uses `channel: 'chrome'` with `--enable-features=WebMCPTesting` (applied by the project itself; nothing to toggle by hand).
+
+```powershell
+cd playwright-ts
+npm run type-check                                                            # strict validation
+npx playwright test tests/ui/webmcp-tables.spec.ts --project=chromium-webmcp # the POC: 3 passed
+npx playwright test tests/ui/webmcp-tables.spec.ts                            # all projects: 3 passed, 9 skipped
+```
+
+By design the specs **skip** on `chromium`, `firefox`, and `webkit` (those browsers don't expose `document.modelContext`). Implementation notes live next to the code: tool registration in `fixtures/webmcp-tools.init.js`, the JSON-string `executeTool` input quirk in `pages/tables.page.ts`.
+
+### B. Manual browser tour (DevTools console)
+
+To touch the WebMCP API directly. Launch a flagged Chrome with an isolated test profile (close other windows on that profile first), then open `http://localhost:8123/playwright-ui-testing-lab.html`:
+
+```powershell
+& "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --enable-features=WebMCPTesting --user-data-dir="$env:TEMP\webmcp-play" http://localhost:8123/playwright-ui-testing-lab.html
+```
+
+In DevTools console on that page:
+
+```js
+typeof document.modelContext                                     // 'object' — API present
+await fetch('webmcp-tools.init.js').then(r => r.text()).then(eval); // register the POC tools
+(await document.modelContext.getTools()).map(t => t.name)        // ['tables_read_state', 'tables_sort']
+const tool = (await document.modelContext.getTools()).find(t => t.name === 'tables_sort');
+await document.modelContext.executeTool(tool, JSON.stringify({ column: 3 }));
+// → {"ok":true,"result":"Sorted by column 4 (ascending)", ...}
+```
+
+Note: on this Chrome build `executeTool` expects the input as a JSON **string** — a plain object fails with `Failed to parse input arguments`. Navigate to the Sortable Data Tables section in the sidebar to see the sorted table the tool call produced.
 
 ---
 

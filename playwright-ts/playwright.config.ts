@@ -40,6 +40,19 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
 
+    {
+      // WebMCP POC: document.modelContext is Chromium-only and, on the
+      // verified Chrome 154 build, requires --enable-features=WebMCPTesting.
+      // channel: 'chrome' pins the locally installed Chrome (verified working);
+      // the bundled Chromium is untested for this flag.
+      name: 'chromium-webmcp',
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        launchOptions: { args: ['--enable-features=WebMCPTesting'] },
+      },
+    },
+
     /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',
