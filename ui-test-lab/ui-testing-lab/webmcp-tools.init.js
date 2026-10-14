@@ -8,9 +8,11 @@
 //   npx -y @playwright/mcp@latest --init-script ui-test-lab/ui-testing-lab/webmcp-tools.init.js
 //
 // Then navigate to http://localhost:8123/playwright-ui-testing-lab.html and
-// the current tab will offer `webmcp_lab_login` and
-// `webmcp_lab_read_result`. WebMCP tools are enabled by default in
-// @playwright/mcp >= 0.0.83; do NOT pass --no-webmcp.
+// the current tab will offer `webmcp_lab_login`, `webmcp_lab_read_result`,
+// `webmcp_tables_sort` and `webmcp_tables_read_state`. WebMCP tools are
+// enabled by default in @playwright/mcp >= 0.0.83; do NOT pass --no-webmcp.
+// The page itself needs a WebMCP-capable browser build: local Chrome with
+// --enable-features=WebMCPTesting (or chrome://flags/#enable-webmcp-testing).
 //
 // Security note (per Playwright docs): tool names, descriptions, schemas and
 // results are provided by the page, so treat them as untrusted input.
@@ -65,6 +67,59 @@
         handleLogin();
         const result = document.getElementById('login-result').textContent.trim();
         return JSON.stringify({ ok: true, result });
+      }
+    }).catch(() => {});
+
+    // Shared snapshot helper for the Sortable Data Tables section.
+    function snapshotTables() {
+      var rows = Array.prototype.map.call(
+        document.querySelectorAll('#sort-table-body tr'),
+        function (tr) {
+          return Array.prototype.map.call(tr.cells, function (td) {
+            return td.textContent.trim();
+          });
+        }
+      );
+      var resultEl = document.getElementById('table-result');
+      return {
+        rows: rows,
+        names: rows.map(function (r) { return r[1]; }),
+        rowCount: rows.length,
+        result: resultEl ? resultEl.textContent.trim() : ''
+      };
+    }
+
+    // Tool 3 (read-only): current sortable-table state as structured data.
+    document.modelContext.registerTool({
+      name: 'tables_read_state',
+      title: 'Read sortable table state',
+      description: 'Returns the current rows of the Sortable Data Tables section as structured data (id, name, email, department, status) plus the #table-result text. Read-only; does not modify the page.',
+      inputSchema: { type: 'object', properties: {} },
+      annotations: { readOnlyHint: true },
+      execute: async () => {
+        const snap = snapshotTables();
+        return JSON.stringify({ ok: true, rowCount: snap.rowCount, names: snap.names, rows: snap.rows, result: snap.result });
+      }
+    }).catch(() => {});
+
+    // Tool 4 (consequential): sort the table by column index via app logic.
+    document.modelContext.registerTool({
+      name: 'tables_sort',
+      title: 'Sort the data table',
+      description: 'Sorts the Sortable Data Tables section by zero-based column index (0=id, 1=name, 2=email, 3=department, 4=status) by invoking the page sortTable() function, then returns the #table-result text and the first row. Mirrors clicking a column header.',
+      inputSchema: {
+        type: 'object',
+        properties: { column: { type: 'integer', minimum: 0, maximum: 4 } },
+        required: ['column']
+      },
+      annotations: { readOnlyHint: false, consequentialHint: true },
+      execute: async ({ column }) => {
+        if (typeof sortTable !== 'function') {
+          return JSON.stringify({ ok: false, error: 'sortable table not available' });
+        }
+        sortTable(column);
+        const snap = snapshotTables();
+        return JSON.stringify({ ok: true, result: snap.result, firstRow: (snap.rows[0] || []).join(' | ') });
       }
     }).catch(() => {});
   }
