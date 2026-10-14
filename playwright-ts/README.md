@@ -74,7 +74,7 @@ The single owner of local environment-file loading. Values already present in yo
 - `testDir: ./tests`, fully parallel, retries on CI, HTML reporter.
 - `use.baseURL` is set from `ENV.BASE_URL`.
 - Diagnostics retained on failure: trace, screenshot, video.
-- Projects: Chromium, Firefox, WebKit (mobile/branded projects commented out for easy enabling).
+- Projects: Chromium, Firefox, WebKit (mobile/branded projects commented out for easy enabling), plus `chromium-webmcp` for the WebMCP POC (flagged local Chrome, see below).
 
 ### Page Object Model (`pages/base.page.ts`)
 
@@ -137,6 +137,32 @@ npm run test:report      # open the HTML report
 ```
 
 On failure, Playwright retains a trace, screenshot, and video under `test-results/`; inspect with the HTML report or `npx playwright show-trace <trace.zip>`.
+
+---
+
+## WebMCP POC (Sortable Data Tables)
+
+Three specs in `tests/ui/webmcp-tables.spec.ts` exercise page-registered WebMCP tools (`tables_sort`, `tables_read_state`) against the UI Testing Lab's Sortable Data Tables section, cross-checked with classic locators. **No login and no `.env` secrets are needed** — only `BASE_URL=http://localhost:8123`.
+
+Prerequisites (one-time):
+
+```bash
+# 1. Serve the SUT (exactly one server on port 8123), from the repo root:
+cd ui-test-lab/ui-testing-lab && python -m http.server 8123
+# 2. Google Chrome installed locally: the `chromium-webmcp` project uses
+#    channel: 'chrome' with --enable-features=WebMCPTesting (applied by the
+#    project itself; nothing to toggle by hand).
+```
+
+Run:
+
+```bash
+npm run type-check                                                                     # strict validation
+npx playwright test tests/ui/webmcp-tables.spec.ts --project=chromium-webmcp          # the POC: 3 passed
+npx playwright test tests/ui/webmcp-tables.spec.ts                                     # all projects: 3 passed, 9 skipped
+```
+
+By design the specs **skip** on `chromium`, `firefox`, and `webkit` (those browsers don't expose `document.modelContext`). Implementation notes live next to the code: tool registration in `fixtures/webmcp-tools.init.js`, the JSON-string `executeTool` input quirk in `pages/tables.page.ts`.
 
 ---
 
